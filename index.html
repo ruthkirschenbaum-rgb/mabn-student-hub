@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MABN Student Hub — Opportunities for Master's Students</title>
+  <meta name="description" content="Track neuroscience conferences, poster deadlines, travel awards, funding and training opportunities.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="brand.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand institutional-brand" href="#" aria-label="MABN Student Hub home"><img src="assets/qc-cuny-logos.png" alt="Queens College and CUNY"><span class="brandtext"><b>MABN Student Hub</b><small>Brought to you by your student representatives</small></span></a>
+  </header>
+
+  <main>
+    <section class="intro" id="opportunities">
+      <div>
+        <p class="eyebrow">THE NEUROSCIENCE OPPORTUNITY BOARD</p>
+        <h1>Opportunities for<br><em>MABN Students</em></h1>
+        <p class="lede">Conferences, poster calls, awards, travel funding, and research opportunities—organized for MABN students.</p>
+      </div>
+      <div class="feature-cards">
+        <div class="feature-card event-card">
+          <p>NEXT EVENT</p>
+          <time datetime="2026-09-30"><strong>SEP 30</strong></time>
+          <div><b>MABN Coffee &amp; Chat</b><small>Science Building · Open to all MABN students</small></div>
+        </div>
+        <div class="feature-card deadline-card">
+          <p>NEXT DEADLINE</p><strong id="deadline-countdown">—</strong><span>days</span>
+          <div><b>Neuroscience 2026 Late-Breaking Abstract</b><small>Due September 15 at 5:00 p.m. EDT</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Opportunity filters">
+      <label class="search"><span>⌕</span><input id="search" type="search" placeholder="Search by opportunity, organization, or location…"></label>
+      <div class="chips" id="filters">
+        <button class="chip active" data-filter="All">All opportunities</button>
+        <button class="chip" data-filter="MABN Event">MABN events</button>
+        <button class="chip" data-filter="Conference">Conferences</button>
+        <button class="chip" data-filter="Poster">Poster deadlines</button>
+        <button class="chip" data-filter="Award">Awards & grants</button>
+        <button class="chip" data-filter="Training">Training</button>
+      </div>
+    </section>
+
+    <section class="board">
+      <div class="board-head"><div><p class="eyebrow">UPCOMING</p><h2>Events and deadlines worth knowing</h2></div><div class="sort">Sorted by <b>date ↑</b></div></div>
+      <div class="list" id="list"></div>
+      <div class="empty" id="empty"><b>No opportunities match.</b><span>Try a different search or filter.</span></div>
+    </section>
+
+    <section class="representatives" aria-labelledby="representatives-title">
+      <div>
+        <p class="eyebrow">YOUR STUDENT REPRESENTATIVES</p>
+        <h2 id="representatives-title">We’re here for you.</h2>
+        <p>Have a question, an idea for an event, or an opportunity to share? Reach out to your MABN student representatives.</p>
+        <a class="contact-button" href="mailto:qcmabnstudentreps@gmail.com">qcmabnstudentreps@gmail.com</a>
+      </div>
+      <ul aria-label="MABN student representatives">
+        <li><span>GE</span><div><b>Gabby Epstein-Toney</b><a href="mailto:gtoney11901@gmail.com">gtoney11901@gmail.com</a></div></li>
+        <li><span>MM</span><div><b>Mahir Miah</b><a href="mailto:mahir.miah57@login.cuny.edu">mahir.miah57@login.cuny.edu</a></div></li>
+        <li><span>JS</span><div><b>Josh Shaffer</b><a href="mailto:joshuashaffera@gmail.com">joshuashaffera@gmail.com</a></div></li>
+        <li><span>RK</span><div><b>Ruth Kirschenbaum</b><a href="mailto:ruth.kirschenbaum68@login.cuny.edu">ruth.kirschenbaum68@login.cuny.edu</a></div></li>
+        <li><span>AS</span><div><b>Ayoyna</b><a href="mailto:Niomi.speight98@login.cuny.edu">Niomi.speight98@login.cuny.edu</a></div></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer><div class="brand"><img class="footer-logo" src="assets/qc-cuny-logos.png" alt="Queens College and CUNY"><span class="brandtext"><b>MABN Student Hub</b><small>Brought to you by your student representatives</small></span></div><p>Master’s Program in Behavioral Neuroscience</p><p class="note">Opportunity details change. Always confirm dates with the organizer.</p></footer>
+  <script src="app.js"></script>
+</body>
+</html>

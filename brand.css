@@ -1,0 +1,267 @@
+.brandtext {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brandtext b {
+  font: 800 1rem Manrope, sans-serif;
+}
+
+.brandtext small {
+  margin-top: 3px;
+  color: var(--muted);
+  font: 500 0.61rem "DM Sans", sans-serif;
+  letter-spacing: 0.015em;
+}
+
+.brandmark {
+  flex: none;
+}
+.institutional-brand img {
+  width: 220px;
+  height: 55px;
+  object-fit: contain;
+}
+
+.footer-logo {
+  width: 145px;
+  height: auto;
+}
+
+:root {
+  --ink: #292929;
+  --muted: #686868;
+  --paper: #f4f4f4;
+  --white: #ffffff;
+  --mint: #ed1b2f;
+  --sea: #a7a9ac;
+  --line: #d2d2d2;
+  --navy: #333333;
+  --orange: #ed1b2f;
+}
+
+.intro h1 em,
+.eyebrow {
+  color: #d7192d;
+}
+
+.deadline-card > strong,
+.calendar-band .eyebrow {
+  color: #ff4558;
+}
+
+.chip:hover,
+.chip.active {
+  background: #d7192d;
+  border-color: #d7192d;
+}
+
+.tag {
+  color: #4b4b4b;
+  background: #e4e4e4;
+}
+
+.tag.urgent {
+  color: #9d1020;
+  background: #ffdce0;
+}
+
+.calendar-band,
+.deadline-card {
+  background: #333333;
+}
+
+@media (max-width: 900px) {
+  .institutional-brand img {
+    width: 175px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 600px) {
+  .institutional-brand img {
+    width: 126px;
+    height: 34px;
+  }
+
+  .institutional-brand .brandtext small {
+    display: none;
+  }
+
+  .institutional-brand .brandtext b {
+    font-size: 0.78rem;
+  }
+}
+.intro {
+  grid-template-columns: 1fr 360px;
+}
+
+.feature-cards {
+  display: grid;
+  gap: 12px;
+}
+
+.feature-card {
+  background: #333333;
+  color: #ffffff;
+  padding: 22px 24px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: end;
+}
+
+.feature-card > p {
+  grid-column: 1 / 3;
+  margin: 0 0 10px;
+  color: #d2d2d2;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.feature-card > div {
+  grid-column: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 17px;
+  padding-top: 14px;
+  border-top: 1px solid #626262;
+}
+
+.feature-card small {
+  color: #d2d2d2;
+}
+
+.event-card {
+  background: #d7192d;
+}
+
+.event-card > p,
+.event-card small {
+  color: #ffe1e4;
+}
+
+.event-card time strong {
+  font: 800 2rem Manrope, sans-serif;
+  letter-spacing: -0.04em;
+}
+
+.event-card > div {
+  border-top-color: rgba(255, 255, 255, 0.35);
+}
+
+@media (max-width: 900px) {
+  .intro {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .feature-cards {
+    grid-template-columns: 1fr;
+  }
+}
+.representatives {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+  gap: 60px;
+  align-items: center;
+  margin: 0 calc(-1 * clamp(22px, 5vw, 76px));
+  padding: 62px clamp(22px, 5vw, 76px);
+  background: #333333;
+  color: #ffffff;
+}
+
+.representatives h2 {
+  margin: 0;
+  font: 800 clamp(1.8rem, 3vw, 3rem)/1.1 Manrope, sans-serif;
+  letter-spacing: -0.04em;
+}
+
+.representatives p:not(.eyebrow) {
+  max-width: 600px;
+  margin: 18px 0 24px;
+  color: #d1d1d1;
+  line-height: 1.65;
+}
+
+.contact-button {
+  display: inline-block;
+  padding: 12px 17px;
+  background: #d7192d;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.contact-button:hover {
+  background: #f02036;
+}
+
+.representatives ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.representatives li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 68px;
+  padding: 13px;
+  border: 1px solid #5a5a5a;
+}
+
+.representatives li span {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  flex: none;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #d7192d;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.representatives li b {
+  display: block;
+  font: 700 0.9rem Manrope, sans-serif;
+}
+
+.representatives li a {
+  display: block;
+  margin-top: 4px;
+  color: #d1d1d1;
+  font-size: 0.72rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.representatives li a:hover {
+  color: #ffffff;
+}
+
+@media (max-width: 760px) {
+  .representatives {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+}
+
+@media (max-width: 460px) {
+  .representatives ul {
+    grid-template-columns: 1fr;
+  }
+}
