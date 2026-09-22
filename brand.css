@@ -265,3 +265,15 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Past events & deadlines (collapsible archive) */
+.past-board{padding:0 0 60px}
+.past-board summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:16px;padding:18px 0;border-top:1px solid var(--line)}
+.past-board summary::-webkit-details-marker{display:none}
+.past-board summary .eyebrow{margin:0}
+.past-board .past-title{font:700 1.15rem Manrope;color:var(--ink)}
+.past-board .past-title::after{content:" ▸";color:var(--muted)}
+.past-board details[open] .past-title::after{content:" ▾"}
+.past-board .past-count{color:var(--muted);font-weight:600}
+.opportunity.is-past{opacity:.6}
+.opportunity.is-past .tag{background:#eceeed;color:var(--muted)}
