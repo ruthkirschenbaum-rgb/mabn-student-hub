@@ -1,4 +1,4 @@
-
+const opportunities = [
   {id:1,date:'2026-09-15',day:'15',month:'SEP',title:'Neuroscience 2026 Late-Breaking Abstract',org:'Society for Neuroscience',type:['Poster','Conference'],place:'Washington, DC',format:'Deadline · 5:00 p.m. EDT',amount:'$260 submission fee',urgent:true,url:'https://www.sfn.org/meetings/neuroscience-2026/late-breaking-abstracts'},
   {id:14,date:'2026-09-18',day:'18',month:'SEP',title:'Neurodegenerative Diseases: Biology & Therapeutics',org:'Cold Spring Harbor Laboratory',type:['Conference','Poster'],place:'Cold Spring Harbor, NY · December 1–4',format:'Abstract deadline',amount:'Student aid may be available',urgent:true,url:'https://meetings.cshl.edu/meetings.aspx?meet=degen'},
   {id:2,date:'2026-09-22',day:'22',month:'SEP',title:'CNS 2027 Symposium Proposal',org:'Cognitive Neuroscience Society',type:['Conference'],place:'Boston, MA · March 20–23, 2027',format:'Proposal deadline',amount:'September 22',urgent:true,url:'https://www.cogneurosociety.org/submit-a-symposium/'},
