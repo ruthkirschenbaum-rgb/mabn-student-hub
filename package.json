@@ -1,0 +1,11 @@
+{
+  "name": "mabn-student-hub",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node tests/check.js"
+  },
+  "dependencies": {
+    "nodemailer": "10.3.1"
+  }
+}

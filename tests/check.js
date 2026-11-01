@@ -65,9 +65,24 @@ module.exports = async function run() {
     require: name => { assert.equal(name, 'node:crypto'); return crypto; } };
   vm.runInNewContext(fs.readFileSync(path.join(root, 'lib/server.js'), 'utf8'), helperContext);
   const helpers = helperContext.module.exports;
+  let gmailCalls = [], smtpConfigs = [], failSMTP = false, rejectSMTP = false;
+  const emailContext = { module: { exports: {} }, process: { env }, AbortSignal, fetch: mockFetch,
+    require: name => {
+      assert.equal(name, 'nodemailer');
+      return { createTransport(options) {
+        smtpConfigs.push(options);
+        return { async sendMail(mail) {
+          gmailCalls.push(mail);
+          if (failSMTP) throw new Error('Test authentication failure');
+          return { accepted: rejectSMTP ? [] : ['qcmabnstudentreps@gmail.com'] };
+        } };
+      } };
+    } };
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'lib/email.js'), 'utf8'), emailContext);
+  const emailHelpers = emailContext.module.exports;
   function endpoint(file) {
     const context = { module: { exports: {} }, process: { env }, AbortSignal, Date, fetch: mockFetch,
-      require: name => { assert.equal(name, '../lib/server'); return helpers; } };
+      require: name => { if (name === '../lib/server') return helpers; assert.equal(name, '../lib/email'); return emailHelpers; } };
     vm.runInNewContext(fs.readFileSync(path.join(root, file), 'utf8'), context);
     return context.module.exports;
   }
@@ -103,6 +118,29 @@ module.exports = async function run() {
   check((await call(visits, { body: {} })).data.count === 2, 'Next visit must see shared persistent count');
   for (let i = 0; i < 30; i++) await call(feedback, { body: { message: `Different message ${i}` } });
   check((await call(feedback, { body: { message: 'One more message over the cap.' } })).code === 429, 'Aggregate rate limit must cap outgoing mail');
+  // Gmail can be used without a sending domain or Resend credentials.
+  storage = new Map();
+  delete env.RESEND_API_KEY; delete env.FEEDBACK_FROM;
+  env.GMAIL_APP_PASSWORD = 'abcd efgh ijkl mnop';
+  check((await call(feedback, { method: 'GET' })).data.available === true, 'Gmail configuration must enable feedback without Resend');
+  check((await call(feedback, { body: { message: 'Please bring this concern to the MABN administration.', email: 'visitor@example.org', ip: '9.8.7.6' } })).code === 200, 'Gmail delivery must succeed');
+  check(gmailCalls.length === 1 && gmailCalls[0].to[0] === 'qcmabnstudentreps@gmail.com' && gmailCalls[0].from.address === 'qcmabnstudentreps@gmail.com', 'Gmail must send from and to the shared account');
+  check(smtpConfigs[0].auth.user === 'qcmabnstudentreps@gmail.com' && smtpConfigs[0].auth.pass === 'abcdefghijklmnop', 'Gmail must normalize the App Password and use the shared login');
+  check(smtpConfigs[0].host === 'smtp.gmail.com' && smtpConfigs[0].port === 465 && smtpConfigs[0].secure === true && smtpConfigs[0].logger === false && smtpConfigs[0].debug === false, 'Gmail must use TLS without message logging');
+  check(!JSON.stringify(gmailCalls[0]).includes('visitor@example.org') && !JSON.stringify(gmailCalls[0]).includes('9.8.7.6') && !gmailCalls[0].replyTo, 'Gmail must not include sender identity or reply-to metadata');
+  const gmailCount = gmailCalls.length;
+  await call(feedback, { body: { message: 'Please bring this concern to the MABN administration.' } });
+  check(gmailCalls.length === gmailCount, 'Gmail must suppress successfully delivered duplicates');
+  failSMTP = true;
+  check((await call(feedback, { body: { message: 'A message while Gmail is unavailable.' } })).code === 503, 'Gmail authentication failure must not report delivery');
+  failSMTP = false; rejectSMTP = true;
+  check((await call(feedback, { body: { message: 'A message rejected by the receiving server.' } })).code === 503, 'Gmail rejected recipient must not report delivery');
+  rejectSMTP = false;
+  const redisToken = env.UPSTASH_REDIS_REST_TOKEN; delete env.UPSTASH_REDIS_REST_TOKEN;
+  check((await call(feedback, { method: 'GET' })).data.available === false, 'Gmail must still require spam-control storage');
+  env.UPSTASH_REDIS_REST_TOKEN = redisToken;
+  env.GMAIL_APP_PASSWORD = 'not-an-app-password';
+  check((await call(feedback, { method: 'GET' })).data.available === false, 'Malformed Gmail configuration must leave feedback unavailable');
   return `${assertions} checks passed: dates, calendar exports, anonymous delivery, validation, failure handling, and shared visit totals.`;
 };
 if (require.main === module) module.exports().then(console.log).catch(error => { console.error(error); process.exitCode = 1; });

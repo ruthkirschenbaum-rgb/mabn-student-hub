@@ -9,10 +9,11 @@ FILES
 - api/visits.js: durable aggregate visit count
 - api/feedback.js: anonymous messages to qcmabnstudentreps@gmail.com
 - lib/server.js: server-only storage, validation, and abuse controls
+- lib/email.js: Gmail SMTP delivery, with optional Resend alternative
 - tests/check.js: calendar and API checks (run: node tests/check.js)
 
 DEPLOYMENT
-Vercel automatically deploys the main branch. The static page needs no build.
+Vercel automatically deploys the main branch. Vercel installs the pinned Nodemailer dependency. The static page needs no build.
 Vercel detects the api/ directory and deploys its Node.js functions.
 Do not move hosting to GitHub Pages: the new features require server functions.
 
@@ -21,18 +22,29 @@ ONE-TIME SETUP FOR COUNTER AND FEEDBACK
    Storage/Marketplace integration. Add the server-side environment variables
    UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN. Existing Vercel KV-style
    KV_REST_API_URL and KV_REST_API_TOKEN are supported as aliases.
-2. Configure Resend with a verified sending domain. Set RESEND_API_KEY and
-   FEEDBACK_FROM (for example, MABN Student Hub <feedback@your-verified-domain>).
-   The sender must be authorized by Resend; the recipient is fixed in the server
-   code to qcmabnstudentreps@gmail.com, matching the website contact address.
-   A Gmail inbox is a recipient; it is not a verified Resend sending domain.
+2. For delivery through the shared Gmail account:
+   a. Sign into qcmabnstudentreps@gmail.com, enable Google 2-Step Verification,
+      and create an App Password named MABN Student Hub:
+      https://myaccount.google.com/apppasswords
+   b. Paste the generated App Password directly into the Vercel Production
+      environment variable GMAIL_APP_PASSWORD. Never paste it in chat or GitHub.
+      Spaces in Google's displayed App Password are removed automatically.
+   c. The application signs into that fixed shared account and sends feedback
+      from it back to qcmabnstudentreps@gmail.com. No domain is required.
+      The personal Vercel account email is not used for delivery.
+   Gmail setup: https://support.google.com/mail/answer/185833
+   If App Passwords are unavailable under the account's security policy, use
+   the existing Resend alternative with RESEND_API_KEY and FEEDBACK_FROM on a
+   verified sending domain. Gmail takes priority when both are configured.
 3. Optionally set FEEDBACK_DEDUP_SECRET to a random secret. Otherwise the storage
    token supplies the HMAC secret for short-lived duplicate-message receipts.
 4. Apply variables to Production (and Preview if wanted), then redeploy.
 5. Verify GET /api/feedback returns {"available":true}. Submit one clearly marked
    test message and confirm receipt in the shared inbox before announcing it.
    The app reports success only after the email provider accepts delivery;
-   acceptance does not guarantee inbox placement.
+   acceptance does not guarantee inbox placement. Configuration availability is
+   not an authentication test; wrong App Passwords are detected on submission.
+   Check Inbox, Spam, and Sent in the shared Gmail account.
 
 Never commit real keys or tokens. .env.example lists variable names only.
 Docs: https://vercel.com/docs/functions/runtimes/node-js
@@ -61,6 +73,7 @@ font requests are used. The email contains the message only, with no visitor ID,
 IP address, user agent, or reply-to address attached by this application. The
 application does not log message bodies or IP addresses and does not store
 message text in Redis. The email provider and recipient retain the message.
+With Gmail delivery, copies may also appear in the shared account's Sent folder.
 Do not put identifying details in a message if anonymity is desired.
 
 Hosting, security, network, and email providers may retain technical logs; no
@@ -77,7 +90,7 @@ The opportunities array in app.js holds existing entries. conferenceEvents holds
 conference dates previously embedded in deadline listings. deadlineDetails links
 each submission/registration deadline to its event and gives its explicit label.
 Keep event dates and deadlines separate; use an exclusive endDate (the day after
-the last event day) for multiday calendar files. Calendar reminders are all-day;
-organizer times and submission cutoffs are retained in the description.
+the last event day) for multiday calendar files. Calendar reminders are all-day
+unless startTime is supplied; organizer times and cutoffs remain in the description.
 Archive status updates using each visitor's local date. Undated items never get
 a calendar button. Confirm dates with the official organizer when updating.
