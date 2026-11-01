@@ -5,22 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MABN Student Hub — Opportunities for Master's Students</title>
   <meta name="description" content="Track neuroscience conferences, poster deadlines, travel awards, funding and training opportunities.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <meta name="referrer" content="no-referrer">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="brand.css">
 </head>
 <body>
   <header class="topbar">
     <a class="brand institutional-brand" href="#" aria-label="MABN Student Hub home"><img src="assets/qc-cuny-logos.png" alt="Queens College and CUNY"><span class="brandtext"><b>MABN Student Hub</b><small>Brought to you by your student representatives</small></span></a>
+    <a class="feedback-link" href="#feedback">Share feedback</a>
   </header>
 
   <main>
     <section class="intro" id="opportunities">
       <div>
         <p class="eyebrow">THE NEUROSCIENCE OPPORTUNITY BOARD</p>
-        <h1>Opportunities for<br><em>MABN Students</em></h1>
+        <h1>Opportunities for<br><span>MABN students</span></h1>
         <p class="lede">Conferences, poster calls, awards, travel funding, and research opportunities—organized for MABN students.</p>
       </div>
       <div class="feature-cards">
@@ -37,7 +36,7 @@
     </section>
 
     <section class="controls" aria-label="Opportunity filters">
-      <label class="search"><span>⌕</span><input id="search" type="search" placeholder="Search by opportunity, organization, or location…"></label>
+      <label class="search"><span>⌕</span><input id="search" aria-label="Search opportunities" type="search" placeholder="Search by opportunity, organization, or location…"></label>
       <div class="chips" id="filters">
         <button class="chip active" data-filter="All">All opportunities</button>
         <button class="chip" data-filter="MABN Event">MABN events</button>
@@ -50,6 +49,7 @@
 
     <section class="board">
       <div class="board-head"><div><p class="eyebrow">UPCOMING</p><h2>Events and deadlines worth knowing</h2></div><div class="sort">Sorted by <b>date ↑</b></div></div>
+      <p class="board-help">Each date is labeled as an event or a deadline. Calendar buttons download an .ics file to open in your calendar app.</p>
       <div class="list" id="list"></div>
       <div class="empty" id="empty"><b>No opportunities match.</b><span>Try a different search or filter.</span></div>
     </section>
@@ -59,6 +59,24 @@
         <summary><span class="eyebrow">ARCHIVE</span><span class="past-title">Past events &amp; deadlines <span class="past-count">(<span id="past-count">0</span>)</span></span></summary>
         <div class="list" id="past-list"></div>
       </details>
+    </section>
+
+    <section class="feedback-section" id="feedback" aria-labelledby="feedback-title">
+      <div class="feedback-intro">
+        <p class="eyebrow">HELP SHAPE THE HUB</p>
+        <h2 id="feedback-title">What’s on your mind?</h2>
+        <p>Suggest an event, flag an issue, or share an idea with your MABN student representatives.</p>
+        <p class="feedback-privacy" id="feedback-privacy">No name, email, or sign-in required. Your message goes to the shared MABN inbox. Leave out identifying details if you want to stay anonymous.</p>
+        <details class="privacy-details"><summary>About anonymity</summary><p>We don’t include your IP address, browser details, or a visitor ID in your message, and this form doesn’t use tracking cookies. Hosting and email providers may keep technical logs, so complete untraceability cannot be guaranteed. We can’t reply to an anonymous message.</p></details>
+      </div>
+      <form id="feedback-form" aria-describedby="feedback-privacy">
+        <label for="feedback-message">Your suggestion or feedback</label>
+        <textarea id="feedback-message" name="message" rows="6" minlength="5" maxlength="3000" required placeholder="What would make the student hub more useful?" autocomplete="off"></textarea>
+        <div class="form-trap" aria-hidden="true"><label for="feedback-website">Leave this blank</label><input id="feedback-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <div class="feedback-form-footer"><small>5–3,000 characters · No contact details needed</small><button class="submit-feedback" type="submit" disabled>Send anonymous feedback</button></div>
+        <p id="feedback-status" role="status" aria-live="polite">Checking feedback availability…</p>
+        <noscript><p>Enable JavaScript to send feedback without opening your email app.</p></noscript>
+      </form>
     </section>
 
     <section class="representatives" aria-labelledby="representatives-title">
@@ -80,6 +98,7 @@
   </main>
 
   <footer><div class="brand"><img class="footer-logo" src="assets/qc-cuny-logos.png" alt="Queens College and CUNY"><span class="brandtext"><b>MABN Student Hub</b><small>Brought to you by your student representatives</small></span></div><p>Master’s Program in Behavioral Neuroscience</p><p class="note">Opportunity details change. Always confirm dates with the organizer.</p></footer>
+  <span id="visit-count" class="visit-count" hidden></span>
   <script src="app.js"></script>
 </body>
 </html>
