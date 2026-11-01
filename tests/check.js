@@ -23,6 +23,11 @@ module.exports = async function run() {
     fetch: async () => ({ ok: false }), sessionStorage: { getItem() { return null; } } });
   vm.runInContext(fs.readFileSync(path.join(root, 'app.js'), 'utf8') + '\nthis.testAPI={opportunities,buildICS,card,isPast};', page);
   const { opportunities, buildICS, card, isPast } = page.testAPI;
+  const rendered = document.getElementById('list').innerHTML;
+  check(rendered.indexOf('MABN Data Blitz') < rendered.indexOf('CNS 2027 Poster'), 'MABN events must lead the opportunity list');
+  const featured = document.getElementById('featured-mabn').innerHTML;
+  check(featured.includes('MABN Data Blitz') && featured.includes('methods or preliminary results'), 'Featured MABN event must include its research invitation');
+  check(featured.includes('Whether or not you plan to present') && featured.includes('https://forms.gle/ZQaWogwJv2g7jP8G7'), 'Featured RSVP must welcome presenters and attendees');
   const cns = opportunities.find(o => o.id === 6);
   const meeting = opportunities.find(o => o.id === 8);
   check(card(cns, false).includes('Nov 3, 2026') && card(cns, false).includes('Mar 20, 2027'), 'Deadline and conference dates must both be explicit');

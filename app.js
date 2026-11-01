@@ -10,7 +10,7 @@ const opportunities = [
   {id:17,date:'2026-11-01',day:'01',month:'NOV',title:'Music Has Power Student Research Showcase',org:'CUNY ASRC + Institute for Music and Neurologic Function',type:['Poster','Conference'],place:'CUNY Graduate Center · November 9, 12:00–5:30 p.m.',format:'Poster showcase submission deadline',amount:'Event is free and open to the public',urgent:false,url:'https://asrc.gc.cuny.edu/event/save-the-date-2026-music-has-power-symposium-awards/'},
   {id:6,date:'2026-11-03',day:'03',month:'NOV',title:'CNS 2027 Poster & Travel Award',org:'Cognitive Neuroscience Society',type:['Poster','Conference','Award'],place:'Boston, MA · March 20–23, 2027',format:'Poster and travel award deadline',amount:'$500 travel award available',urgent:false,url:'https://www.cogneurosociety.org/travel-award/'},
   {id:7,date:'2026-11-14',endDate:'2026-11-19',day:'14',month:'NOV',title:'Neuroscience 2026 Annual Meeting',org:'Society for Neuroscience',type:['Conference'],place:'Washington, DC',format:'Conference dates',amount:'November 14–18',urgent:false,url:'https://www.sfn.org/meetings/neuroscience-2026',calendarKind:'event'},
-  {id:5,date:'2026-11-20',day:'20',month:'NOV',title:'MABN Data Blitz',org:'MABN Student Representatives',type:['MABN Event'],place:'Science Building · Razran Room (E308)',format:'Friday, November 20 · 12:30 p.m. ET',amount:'Sign up using the registration form',urgent:false,url:'https://docs.google.com/forms/d/e/1FAIpQLSfMn5UgwnvD3Rbbtd9GZ2h4dmqGJCIAGc3gCDZwkcDY5XRFZw/viewform',linkLabel:'Register for Data Blitz',calendarKind:'event',startTime:'2026-11-20T12:30:00-05:00'},
+  {id:5,date:'2026-11-20',day:'20',month:'NOV',title:'MABN Data Blitz',org:'MABN Student Representatives',type:['MABN Event'],place:'Science Building · Razran Room (E308)',format:'Friday, November 20 · 12:30 p.m. ET',amount:'Sign up using the registration form',urgent:false,url:'https://forms.gle/ZQaWogwJv2g7jP8G7',linkLabel:'RSVP for Data Blitz',description:"Please join us for the MABN Data Blitz! This is an informal event for students to share their research. Presentations don’t need to be based on completed work; you can present methods or preliminary results.\n\nThis event is for anyone who wants to learn more about neuroscience research at Queens College or practice presenting their research in front of their peers.",rsvpNote:'Whether or not you plan to present, please RSVP.',calendarKind:'event',startTime:'2026-11-20T12:30:00-05:00'},
   {id:22,date:'2026-11-30',day:'30',month:'NOV',title:'INS Boston 2027 Early Registration',org:'International Neuropsychological Society',type:['Conference'],place:'Boston, MA · conference February 10–13, 2027',format:'Discounted in-training registration deadline',amount:'$143 through November 30 · abstract submissions closed',urgent:false,url:'https://ins-boston-2027.oa-event.com/registration'},
   {id:18,date:'2026-12-01',day:'01',month:'DEC',title:'EPA 2027 Annual Meeting',org:'Eastern Psychological Association',type:['Conference','Poster'],place:'Philadelphia, PA · February 25–27, 2027',format:'Submission deadline · 5:00 p.m. EST',amount:'Current EPA membership required to submit',urgent:false,url:'https://www.easternpsychological.org/i4a/pages/index.cfm?pageID=3501'},
   {id:19,date:'',day:'TBD',month:'SPRING',title:'Greater New York SfN Annual Symposium',org:'Greater New York Chapter, Society for Neuroscience',type:['Conference','Poster'],place:'New York City area',format:'2027 symposium & trainee poster details',amount:'TBD · watch for the official announcement',urgent:false,url:'https://my.sfn.org/Directories/SfN-Chapters/Chapter-Home-Page?pa_chapterid=%7B4C0E121E-E3C1-EA11-A812-000D3A3156C1%7D'},
@@ -65,10 +65,11 @@ current.forEach(o=>{o.urgent=!!o.date&&!isEvent(o)&&daysUntil(o.date)>=0&&daysUn
 const longDate=iso=>new Date(iso+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric'});
 const shortDate=iso=>new Date(iso+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase();
 const upcoming=current.filter(o=>o.date&&o.date>=todayISO).sort((a,b)=>a.date.localeCompare(b.date));
-const nextEvent=upcoming.find(isEvent), nextDeadline=upcoming.find(o=>!isEvent(o));
+const nextMabnEvent=upcoming.find(o=>isEvent(o)&&o.type.includes('MABN Event'));
+const nextEvent=nextMabnEvent||upcoming.find(isEvent), nextDeadline=upcoming.find(o=>!isEvent(o));
 const eventCard=document.querySelector('.event-card'), deadlineCard=document.querySelector('.deadline-card');
 if(eventCard){eventCard.innerHTML=nextEvent
-  ?`<p>NEXT EVENT</p><time datetime="${nextEvent.date}"><strong>${shortDate(nextEvent.date)}</strong></time><div><b>${nextEvent.title}</b><small>${nextEvent.place} · ${nextEvent.format}</small></div>`
+  ?`<p>${nextMabnEvent?'WHAT’S NEXT · MABN EVENT':'WHAT’S NEXT'}</p><time datetime="${nextEvent.date}"><strong>${shortDate(nextEvent.date)}</strong></time><div><b>${nextEvent.title}</b><small>${nextEvent.place} · ${nextEvent.format}</small></div>`
   :`<p>NEXT EVENT</p><strong>TBA</strong><div><b>More events coming soon</b><small>Check back for updates</small></div>`}
 if(deadlineCard){if(nextDeadline){const d=daysUntil(nextDeadline.date);deadlineCard.innerHTML=
   `<p>NEXT DEADLINE</p><strong id="deadline-countdown">${d}</strong><span>${d===1?'day':'days'}</span><div><b>${nextDeadline.title}</b><small>${nextDeadline.dateLabel||'Deadline'} · ${d===0?'Due today':'Due '+longDate(nextDeadline.date)}</small></div>`}
@@ -101,6 +102,20 @@ function card(o,past){
     <div class="actions">${o.url?`<a class="official-link" href="${escapeHTML(o.url)}" target="_blank" rel="noreferrer" aria-label="${escapeHTML((o.linkLabel||'Visit official site for '+o.title)+' (opens in a new tab)')}">${escapeHTML(o.linkLabel||'Visit official site')} <span aria-hidden="true">↗</span></a>`:''}${o.date&&!past?calendarButton(o,isEvent(o)?(o.type.includes('Conference')?'Add conference to calendar':'Add event to calendar'):'Add deadline to calendar'):''}${conference&&!isPast(conference)?calendarButton(conference,conference.id===27?'Add event to calendar':'Add conference to calendar'):''}</div>
   </article>`;
 }
+
+const featuredMabn=document.getElementById('featured-mabn');
+if(featuredMabn){
+  if(!nextMabnEvent)featuredMabn.hidden=true;
+  else featuredMabn.innerHTML=`
+    <div class="featured-mabn-heading"><p class="eyebrow">COMING UP IN MABN</p><span class="tag">MABN event</span></div>
+    <h2 id="featured-mabn-title">${escapeHTML(nextMabnEvent.title)}</h2>
+    <p class="featured-mabn-details">${dateRange(nextMabnEvent)} · ${escapeHTML(nextMabnEvent.startTime?new Date(nextMabnEvent.startTime).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York',timeZoneName:'short'}):nextMabnEvent.format)}<br>${escapeHTML(nextMabnEvent.place)}</p>
+    ${nextMabnEvent.description?nextMabnEvent.description.split('\n\n').map(p=>`<p class="featured-mabn-description">${escapeHTML(p)}</p>`).join(''):''}
+    ${nextMabnEvent.rsvpNote?`<p class="featured-mabn-rsvp">${escapeHTML(nextMabnEvent.rsvpNote)}</p>`:''}
+    <div class="featured-mabn-actions">${nextMabnEvent.url?`<a class="official-link" href="${escapeHTML(nextMabnEvent.url)}" target="_blank" rel="noreferrer">${escapeHTML(nextMabnEvent.linkLabel||'RSVP')} <span aria-hidden="true">↗</span></a>`:''}${calendarButton(nextMabnEvent,'Add event to calendar')}</div>`;
+  featuredMabn.addEventListener('click',e=>{const cal=e.target.closest('[data-cal]');if(cal)downloadICS(opportunities.find(o=>o.id===+cal.dataset.cal));});
+}
+
 const pastItems=opportunities.filter(isPast).sort((a,b)=>b.date.localeCompare(a.date)); // most recent first
 const pastSection=document.getElementById('past-section'), pastList=document.getElementById('past-list'), pastCount=document.getElementById('past-count');
 
@@ -108,6 +123,8 @@ function render(){
   const q=search.value.trim().toLowerCase();
   const match=o=>((active==='All'&&!o.trainingOnly)||o.type.includes(active))&&(!q||[o.title,o.org,o.place,o.type.join(' ')].join(' ').toLowerCase().includes(q));
   const rows=current.filter(match).sort((a,b)=>{
+    const mabnPriority=Number(b.type.includes('MABN Event'))-Number(a.type.includes('MABN Event'));
+    if(mabnPriority)return mabnPriority;
     if(a.date&&b.date)return a.date.localeCompare(b.date);
     if(a.date)return -1;
     if(b.date)return 1;
