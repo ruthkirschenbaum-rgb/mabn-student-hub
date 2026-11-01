@@ -32,7 +32,7 @@ module.exports = async function run() {
   for (const o of opportunities.filter(o => o.date)) {
     const ics = buildICS(o);
     const unfolded = ics.replace(/\r\n /g, '');
-    check(unfolded.includes(`DTSTART;VALUE=DATE:${o.date.replaceAll('-', '')}`), 'Calendar must use selected date');
+    check(unfolded.includes(o.startTime ? `DTSTART:${new Date(o.startTime).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}` : `DTSTART;VALUE=DATE:${o.date.replaceAll('-', '')}`), 'Calendar must use selected date and supplied start time');
     check(ics.split('\r\n').every(line => Buffer.byteLength(line) <= 75), 'Calendar lines must fit RFC 5545 byte limit');
     check(unfolded.includes('UID:') && unfolded.includes('DTSTAMP:'), 'Calendar must include stable UID and timestamp');
   }

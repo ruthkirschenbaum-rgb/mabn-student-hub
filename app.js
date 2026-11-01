@@ -10,7 +10,7 @@ const opportunities = [
   {id:17,date:'2026-11-01',day:'01',month:'NOV',title:'Music Has Power Student Research Showcase',org:'CUNY ASRC + Institute for Music and Neurologic Function',type:['Poster','Conference'],place:'CUNY Graduate Center · November 9, 12:00–5:30 p.m.',format:'Poster showcase submission deadline',amount:'Event is free and open to the public',urgent:false,url:'https://asrc.gc.cuny.edu/event/save-the-date-2026-music-has-power-symposium-awards/'},
   {id:6,date:'2026-11-03',day:'03',month:'NOV',title:'CNS 2027 Poster & Travel Award',org:'Cognitive Neuroscience Society',type:['Poster','Conference','Award'],place:'Boston, MA · March 20–23, 2027',format:'Poster and travel award deadline',amount:'$500 travel award available',urgent:false,url:'https://www.cogneurosociety.org/travel-award/'},
   {id:7,date:'2026-11-14',endDate:'2026-11-19',day:'14',month:'NOV',title:'Neuroscience 2026 Annual Meeting',org:'Society for Neuroscience',type:['Conference'],place:'Washington, DC',format:'Conference dates',amount:'November 14–18',urgent:false,url:'https://www.sfn.org/meetings/neuroscience-2026',calendarKind:'event'},
-  {id:5,date:'2026-11-20',day:'20',month:'NOV',title:'MABN Data Blitz',org:'MABN Student Representatives',type:['MABN Event'],place:'Science Building',format:'Friday, November 20',amount:'Time and details TBD',urgent:false,url:'',calendarKind:'event'},
+  {id:5,date:'2026-11-20',day:'20',month:'NOV',title:'MABN Data Blitz',org:'MABN Student Representatives',type:['MABN Event'],place:'Science Building · Razran Room (E308)',format:'Friday, November 20 · 12:30 p.m. ET',amount:'Sign up using the registration form',urgent:false,url:'https://docs.google.com/forms/d/e/1FAIpQLSfMn5UgwnvD3Rbbtd9GZ2h4dmqGJCIAGc3gCDZwkcDY5XRFZw/viewform',linkLabel:'Register for Data Blitz',calendarKind:'event',startTime:'2026-11-20T12:30:00-05:00'},
   {id:22,date:'2026-11-30',day:'30',month:'NOV',title:'INS Boston 2027 Early Registration',org:'International Neuropsychological Society',type:['Conference'],place:'Boston, MA · conference February 10–13, 2027',format:'Discounted in-training registration deadline',amount:'$143 through November 30 · abstract submissions closed',urgent:false,url:'https://ins-boston-2027.oa-event.com/registration'},
   {id:18,date:'2026-12-01',day:'01',month:'DEC',title:'EPA 2027 Annual Meeting',org:'Eastern Psychological Association',type:['Conference','Poster'],place:'Philadelphia, PA · February 25–27, 2027',format:'Submission deadline · 5:00 p.m. EST',amount:'Current EPA membership required to submit',urgent:false,url:'https://www.easternpsychological.org/i4a/pages/index.cfm?pageID=3501'},
   {id:19,date:'',day:'TBD',month:'SPRING',title:'Greater New York SfN Annual Symposium',org:'Greater New York Chapter, Society for Neuroscience',type:['Conference','Poster'],place:'New York City area',format:'2027 symposium & trainee poster details',amount:'TBD · watch for the official announcement',urgent:false,url:'https://my.sfn.org/Directories/SfN-Chapters/Chapter-Home-Page?pa_chapterid=%7B4C0E121E-E3C1-EA11-A812-000D3A3156C1%7D'},
@@ -98,7 +98,7 @@ function card(o,past){
       <dl class="schedule"><div><dt>${dateLabel(o)}</dt><dd>${dateRange(o)}</dd></div>${conference?`<div><dt>${conference.id===27?'Event date':'Conference dates'}</dt><dd>${dateRange(conference)}</dd></div>`:''}</dl>
       <p class="listing-detail">${escapeHTML(o.format)} · ${escapeHTML(o.amount)}</p>
     </div>
-    <div class="actions">${o.url?`<a class="official-link" href="${escapeHTML(o.url)}" target="_blank" rel="noreferrer" aria-label="${escapeHTML('Visit official site for '+o.title+' (opens in a new tab)')}">Visit official site <span aria-hidden="true">↗</span></a>`:''}${o.date&&!past?calendarButton(o,isEvent(o)?(o.type.includes('Conference')?'Add conference to calendar':'Add event to calendar'):'Add deadline to calendar'):''}${conference&&!isPast(conference)?calendarButton(conference,conference.id===27?'Add event to calendar':'Add conference to calendar'):''}</div>
+    <div class="actions">${o.url?`<a class="official-link" href="${escapeHTML(o.url)}" target="_blank" rel="noreferrer" aria-label="${escapeHTML((o.linkLabel||'Visit official site for '+o.title)+' (opens in a new tab)')}">${escapeHTML(o.linkLabel||'Visit official site')} <span aria-hidden="true">↗</span></a>`:''}${o.date&&!past?calendarButton(o,isEvent(o)?(o.type.includes('Conference')?'Add conference to calendar':'Add event to calendar'):'Add deadline to calendar'):''}${conference&&!isPast(conference)?calendarButton(conference,conference.id===27?'Add event to calendar':'Add conference to calendar'):''}</div>
   </article>`;
 }
 const pastItems=opportunities.filter(isPast).sort((a,b)=>b.date.localeCompare(a.date)); // most recent first
@@ -135,13 +135,15 @@ function foldICS(line){
 }
 function buildICS(o){
   const nextDay=new Date(o.date+'T12:00:00Z');nextDay.setUTCDate(nextDay.getUTCDate()+1);
-  const description=`${o.org}\n${dateLabel(o)}: ${dateRange(o)}\n${o.format}\n${o.amount}\nAll-day calendar reminder. Check the official site for times and submission cutoffs.`;
+  const description=`${o.org}\n${dateLabel(o)}: ${dateRange(o)}\n${o.format}\n${o.amount}\n${o.startTime?'Event starts at '+o.format+'.':'All-day calendar reminder.'} Check the official site for details and submission cutoffs.`;
   return [
     'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MABN Student Hub//Opportunities//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT',
     `UID:mabn-opportunity-${o.id}@mabn-student-hub`,
     `DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}`,
-    `DTSTART;VALUE=DATE:${o.date.replaceAll('-','')}`,
-    `DTEND;VALUE=DATE:${(o.endDate||nextDay.toISOString().slice(0,10)).replaceAll('-','')}`,
+    ...(o.startTime?[`DTSTART:${new Date(o.startTime).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}`]:[
+      `DTSTART;VALUE=DATE:${o.date.replaceAll('-','')}`,
+      `DTEND;VALUE=DATE:${(o.endDate||nextDay.toISOString().slice(0,10)).replaceAll('-','')}`,
+    ]),
     `SUMMARY:${escapeICS((isEvent(o)?'':dateLabel(o)+': ')+o.title)}`,
     `DESCRIPTION:${escapeICS(description)}`,`LOCATION:${escapeICS(o.place)}`,
     ...(o.url?[`URL:${o.url}`]:[]),'END:VEVENT','END:VCALENDAR',''
